@@ -1,0 +1,39 @@
+vsFTP: Very Secure FTP
+package: vsftpd
+service: vsftpd
+port 21: The Control Connection
+port 2B: The Data Connection
+
+1) Install
+# dnf install vsftpd -y
+
+2) Default DocumentR00t for public access
+# cd /var/ftp/pub
+# touch file{l..10}.txt
+
+3) Configuration File:
+# vim /etc/vsftpd/vsftpd.conf
+    anonymous_enable YES
+:wq
+
+4) Start the service:
+# systemctl restart vsftpd
+# systemctl enable vsftpd
+# systemctl is-active vsftpd
+# systemctl is-enabled vsftpd
+
+S) Firewall :
+# firewall-cmd --add-service=ftp --permanent
+# firewall-cmd --reload
+# firewall-cmd --list- all
+
+On Client:
+on CLI:
+Install client side tool to access ftp
+    # dnf install ftp -y
+    # ftp master.itiss.com
+
+------------------------------------------------------------------------
+
+
+
