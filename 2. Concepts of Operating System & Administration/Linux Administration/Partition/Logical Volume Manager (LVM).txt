@@ -1,0 +1,96 @@
+[root@master ~]# fdisk /dev/nvme0n1
+
+Command (m for help): n
+Partition type
+   p   primary (2 primary, 0 extended, 2 free)
+   e   extended (container for logical partitions)
+Select (default p): p
+Partition number (3,4, default 3): 
+First sector (37767168-41943039, default 37767168): 
+Last sector, +/-sectors or +/-size{K,M,G,T,P} (37767168-41943039, default 41943039): +10G
+Value out of range.
+Last sector, +/-sectors or +/-size{K,M,G,T,P} (37767168-41943039, default 41943039): +1G
+
+Created a new partition 3 of type 'Linux' and of size 1 GiB.
+Partition #3 contains a swap signature.
+
+Do you want to remove the signature? [Y]es/[N]o: y
+
+The signature will be removed by a write command.
+
+Command (m for help): t
+Partition number (1-3, default 3): 3
+Hex code or alias (type L to list all): 8e
+
+Changed type of partition 'Linux' to 'Linux LVM'.
+
+Command (m for help): w
+The partition table has been altered.
+Syncing disks.
+
+[root@master ~]# partprobe
+Warning: Unable to open /dev/sr0 read-write (Read-only file system).  /dev/sr0 has been opened read-only.
+[root@master ~]# pvcreate /dev/nvme0n1p3
+  Physical volume "/dev/nvme0n1p3" successfully created.
+
+[root@master ~]# pvs
+  PV             VG Fmt  Attr PSize  PFree
+  /dev/nvme0n1p2 cs lvm2 a--  16.00g 4.00m
+  /dev/nvme0n1p3    lvm2 ---   1.00g 1.00g
+[root@master ~]# pvdisplay
+   
+  "/dev/nvme0n1p3" is a new physical volume of "1.00 GiB"
+  --- NEW Physical volume ---
+  PV Name               /dev/nvme0n1p3
+  VG Name               
+  PV Size               1.00 GiB
+  Allocatable           NO
+  PE Size               0   
+  Total PE              0
+  Free PE               0
+  Allocated PE          0
+  PV UUID               3vg5hj-O9pj-IfXR-Gth0-QXnd-oY6n-fheR6q
+   
+
+---------Based on size------------------------
+[root@master ~]# vgcreate file /dev/nvme0n1p3
+  Volume group "file" successfully created
+[root@master ~]# vgdisplay
+
+[root@master ~]# lvcreate -L +595M -n lv00 file
+  Rounding up size to full physical extent 596.00 MiB
+  Logical volume "lv00" created.
+[root@master ~]# mkfs.ext4 /dev/file/lv00
+mke2fs 1.46.5 (30-Dec-2021)
+Creating filesystem with 152576 4k blocks and 38160 inodes
+
+[root@master ~]# mkdir /lvm1
+[root@master ~]# vim /etc/fstab
+        /dev/file/lv00  /lvm1   ext4    defaults        0 0
+[root@master ~]# systemctl daemon-reload
+[root@master ~]# mount -a
+[root@master ~]# df -h
+Filesystem             Size  Used Avail Use% Mounted on
+/dev/mapper/file-lv00  570M   24K  529M   1% /lvm1
+
+
+---------Based on blocks--------------------------
+[root@master ~]# vgcreate -s 8M file /dev/nvme0n1p3
+  Volume group "file" successfully created
+[root@master ~]# vgdisplay
+
+[root@master ~]# lvcreate -l 30 -n lv01 file
+  Rounding up size to full physical extent 596.00 MiB
+  Logical volume "lv01" created.
+[root@master ~]# mkfs.vfat /dev/file/lv01
+mke2fs 1.46.5 (30-Dec-2021)
+Creating filesystem with 152576 4k blocks and 38160 inodes
+
+[root@master ~]# mkdir /lvm1
+[root@master ~]# vim /etc/fstab
+          /dev/file/lv00  /lvm1   vfat    defaults        0 0
+[root@master ~]# systemctl daemon-reload
+[root@master ~]# mount -a
+[root@master ~]# df -h
+Filesystem             Size  Used Avail Use% Mounted on
+/dev/mapper/file-lv00  570M   24K  529M   1% /lvm1
