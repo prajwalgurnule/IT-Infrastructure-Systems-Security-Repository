@@ -1,0 +1,80 @@
+[praj@master ~]$ df -h
+Filesystem           Size  Used Avail Use% Mounted on
+devtmpfs             4.0M     0  4.0M   0% /dev
+tmpfs                1.8G     0  1.8G   0% /dev/shm
+tmpfs                727M  9.7M  717M   2% /run
+/dev/mapper/cs-root   10G  4.4G  5.7G  44% /
+/dev/nvme0n1p1       2.0G  310M  1.7G  16% /boot
+tmpfs                364M  104K  364M   1% /run/user/1000
+/dev/sr0             9.1G  9.1G     0 100% /run/media/praj/CentOS-Stream-9-BaseOS-x86_64
+[root@master ~]$ fdisk /dev/nvme0n1
+
+We trust you have received the usual lecture from the local System
+Administrator. It usually boils down to these three things:
+
+    #1) Respect the privacy of others.
+    #2) Think before you type.
+    #3) With great power comes great responsibility.
+
+[sudo] password for praj: 
+
+Welcome to fdisk (util-linux 2.37.4).
+Changes will remain in memory only, until you decide to write them.
+Be careful before using the write command.
+
+This disk is currently in use - repartitioning is probably a bad idea.
+It's recommended to umount all file systems, and swapoff all swap
+partitions on this disk.
+
+
+Command (m for help): n
+Partition type
+   p   primary (2 primary, 0 extended, 2 free)
+   e   extended (container for logical partitions)
+Select (default p): p
+Partition number (3,4, default 3): 3
+First sector (37767168-41943039, default 37767168): 
+Last sector, +/-sectors or +/-size{K,M,G,T,P} (37767168-41943039, default 41943039): +1G
+
+Created a new partition 3 of type 'Linux' and of size 1 GiB.
+
+Command (m for help): t
+Partition number (1-3, default 3): 
+Hex code or alias (type L to list all): 82
+
+Changed type of partition 'Linux' to 'Linux swap / Solaris'.
+
+Command (m for help): p
+Disk /dev/nvme0n1: 20 GiB, 21474836480 bytes, 41943040 sectors
+Disk model: VMware Virtual NVMe Disk
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disklabel type: dos
+Disk identifier: 0x2552c75a
+
+Device         Boot    Start      End  Sectors Size Id Type
+/dev/nvme0n1p1 *        2048  4196351  4194304   2G 83 Linux
+/dev/nvme0n1p2       4196352 37767167 33570816  16G 8e Linux LVM
+/dev/nvme0n1p3      37767168 39864319  2097152   1G 82 Linux swap / Solaris
+
+Command (m for help): w
+The partition table has been altered.
+Syncing disks.
+
+[root@master ~]# mkswap /dev/nvme0n1p3
+Setting up swapspace version 1, size = 1024 MiB (1073737728 bytes)
+no label, UUID=6aeb2227-6cde-4bba-9aad-c9b9fab6df7e
+
+[root@master ~]# vim /etc/fstab
+    /dev/nvme0n1p3     none                    swap    defaults        0 0
+
+[root@master ~]# systemctl daemon-reload
+[root@master ~]# swapon -a
+[root@master ~]# free -mh
+               total        used        free      shared  buff/cache   available
+Mem:           3.5Gi       1.5Gi       1.3Gi        22Mi       1.0Gi       2.1Gi
+Swap:          7.0Gi          0B       7.0Gi
+[root@master ~]# 
+
+--------------To delete 
