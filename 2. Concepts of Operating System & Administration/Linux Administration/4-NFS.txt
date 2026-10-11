@@ -1,0 +1,38 @@
+[On Server]-------------------------
+[root@master ~]# dnf install nfs-utils -y
+[root@master ~]# mkdir /nfsshare
+
+[root@master ~]# firewall-cmd --add-service=nfs --permanent
+success
+
+[root@master ~]# firewall-cmd --reload
+success
+
+[root@master ~]# cd /nfsshare
+
+[root@master nfsshare]# touch file{1..10}.txt
+
+[root@master nfsshare]# ls
+file10.txt  file2.txt  file4.txt  file6.txt  file8.txt
+file1.txt   file3.txt  file5.txt  file7.txt  file9.txt
+
+[root@master nfsshare]# vim /etc/exports
+          
+[root@master nfsshare]# systemctl restart nfs-server
+[root@master nfsshare]# systemctl enable nfs-server
+
+
+[On Client]----------------------
+----Temporary Mounting-----
+[root@master ~]# dnf install nfs-utils -y
+[root@master ~]# mkdir /nfs
+[root@master ~]# mount -t nfs 192.168.201.10:/nfsshare /nfs
+[root@master ~]# df -h
+
+----Permanent Mounting------
+[root@master ~]# vim /etc/fstab
+        192.168.201.100:/nfsshare  /nfs  nfs  defaults  0 0
+        
+[root@master ~]# systemctl daemon-reload
+[root@master ~]# mount -a
+[root@master ~]# df -h
