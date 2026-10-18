@@ -1,0 +1,12 @@
+'''
+Write a script that asks the user to input 5 integer scores, appending each to a list. Use a for loop and if conditions to compare the values, find the highest and lowest scores in the list, and print them.
+'''
+
+cities = ["Delhi", "Mumbai", "Pune", "Mumbai", "Delhi"]
+unique_cities = []
+
+for city in cities:
+  if city not in unique_cities:
+    unique_cities.append(city)
+
+print("Unique Cities : ",unique_cities)
