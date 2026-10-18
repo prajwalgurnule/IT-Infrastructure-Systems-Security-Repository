@@ -1,0 +1,15 @@
+'''
+Take an input from user while running the program and print the output. Write a script that asks the user to enter a multi-digit number. Use a while loop and arithmetic operators (floor division // and modulo %) to extract each digit, calculate the total sum of all the digits, and print the final sum.
+'''
+
+number = int(input("Enter the number : "))
+original_number = number
+
+number = abs(number)
+digit_sum = 0
+while number > 0:
+  digit = number % 10
+  digit_sum += digit
+  number = number // 10
+
+print(f"The sum of digit for number {original_number} : {digit_sum}")
