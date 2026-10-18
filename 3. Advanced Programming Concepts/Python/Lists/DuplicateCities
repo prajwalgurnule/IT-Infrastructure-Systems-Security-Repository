@@ -1,5 +1,7 @@
 '''
-Write a script that asks the user to input 5 integer scores, appending each to a list. Use a for loop and if conditions to compare the values, find the highest and lowest scores in the list, and print them.
+Create a list with several duplicate string entries (e.g., ["Delhi", "Mumbai", "Pune",
+"Mumbai", "Delhi"]). Create a new empty list. Loop through the original list and use an if
+condition with
 '''
 
 cities = ["Delhi", "Mumbai", "Pune", "Mumbai", "Delhi"]
