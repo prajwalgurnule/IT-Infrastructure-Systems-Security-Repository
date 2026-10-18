@@ -1,0 +1,17 @@
+'''
+Mini-Project - Number Guesser
+Combine loops, conditionals, user input, and data types to create a simple number guessing game. Hardcode a "secret number" in your script. Use a while loop to continuously prompt the user for a guess. Use if-elif-else conditions to tell the user if their guess is "too high", "too low", or "correct". Break the loop and congratulate the user once they guess correctly.
+'''
+
+secret_number = 42
+
+print("Our system have a secret number. can u guess it what it is ?")
+while True:
+  number = int(input("\nEnter the number - "))
+  if (number < secret_number):
+    print("Too low! Try the higher number")
+  elif (number > secret_number):
+    print("Too high! Try the smaller number")
+  else:
+    print("Congratulation !! You have guess the right number")
+    break
