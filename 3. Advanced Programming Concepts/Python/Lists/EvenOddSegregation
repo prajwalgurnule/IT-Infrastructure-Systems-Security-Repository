@@ -1,0 +1,16 @@
+'''
+Create a hardcoded list of 10 random integers. Initialize two new empty lists: one for even numbers and one for odd numbers. Use a for loop and an if-else condition to evaluate each number in the main list, append it to the appropriate sub-list, and print both final lists.
+'''
+
+number = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
+print("Your List : ",number)
+even = []
+odd = []
+for num in number:
+  if num % 2 == 0:
+    even.append(num)
+  else:
+    odd.append(num)
+
+print("Even Numbers : ",even)
+print("Odd Numbers : ",odd)
