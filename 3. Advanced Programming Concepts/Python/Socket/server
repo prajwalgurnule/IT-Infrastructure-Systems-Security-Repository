@@ -1,0 +1,31 @@
+import socket
+
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.bind(("localhost", 1234))
+s.listen()
+print("Server is waiting for the client connection")
+c, addr = s.accept()
+print("Connected to - ", addr)
+message = c.recv(1024).decode()
+
+print("Recieved : ",message)
+modified = message.upper() + "\n" + message.lower()
+c.send(modified.encode())
+c.close()
+s.close()
+print("Connection Closed")
+
+---------------
+
+client.py
+
+import socket
+
+c = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+c.connect(("localhost",1234))
+message = input("Enter the message : ")
+c.send(message.encode())
+response = c.recv(1024).decode()
+print("Client reply - ")
+print(response)
+c.close()
